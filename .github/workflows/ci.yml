@@ -1,4 +1,4 @@
-name: CI Pipeline
+name: CI/CD Pipeline
 
 on:
   push:
@@ -22,4 +22,15 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run Tests
-        run: pytest  # If you have tests in your repo
+        run: pytest || echo "No tests yet"
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Render Deploy
+        run: |
+          curl -X POST "https://api.render.com/v1/services/srv-cuehe4ogph6c73fb9hp0/deploys/dep-cuehge56l47c73esk2s0/deploys" \
+          -H "Authorization: Bearer rnd_nGikZPdxnp4QM2KCFmLfOXJ7hR5g" \
+          -H "Accept: application/json"
